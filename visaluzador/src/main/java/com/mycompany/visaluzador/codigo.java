@@ -5,6 +5,7 @@
 package com.mycompany.visaluzador;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +37,30 @@ public class codigo extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
+        response.setContentType("image/png");
         String etiqueta = request.getParameter("etiqueta");
-        request.setAttribute("resultado", etiqueta);
-         
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
 
+        // Gera uma imagem de 200x200 pixels
+        int width = 200, height = 200;
+        BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = buffer.createGraphics();
+
+        // Preenche com cor branca
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, width, height);
+
+        // Desenha uma linha preta na diagonal
+        g.setColor(Color.BLACK);
+        g.drawLine(0, 0, width, height);
+        
+        //Escreve um texto
+        g.setColor( Color.black );
+        g.drawString(etiqueta,0,20);  
+
+        // Envia a imagem gerada para o cliente via OutputStream
+        try (OutputStream out = response.getOutputStream()) {
+            ImageIO.write(buffer, "png", out);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -70,23 +89,6 @@ public class codigo extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/png");
-
-        // Gerar ou carregar a imagem (simulação com um BufferedImage)
-        BufferedImage imagem = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = imagem.createGraphics();
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, 200, 200);
-        g2d.setColor(Color.BLACK);
-        g2d.drawString("Etiqueta: " + request.getParameter("etiqueta"), 20, 100); // Exibir o valor da etiqueta
-        g2d.dispose();
-
-        // Enviar a imagem no response
-        try (OutputStream out = response.getOutputStream()) {
-            ImageIO.write(imagem, "png", out);
-            out.flush();
-        }
-        
         processRequest(request, response);
     }
 
@@ -99,5 +101,5 @@ public class codigo extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-}
+    
+}   

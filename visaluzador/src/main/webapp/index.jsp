@@ -12,14 +12,14 @@
     <div class="pagina">
         <div class="etiquetaBox">
             <form action="codigo" method="POST">
-                <input type="text" id="etiquetaInput" name="etiqueta"><br>
+                <textarea class="etiquetaInput" name="etiqueta" rows="5" cols="33"></textarea><br>
                 <button type="submit">Apresentar</button>
                 <button type="button">Adicionar imagem</button>
                 <button type="button">Rotacionar etiqueta</button>
             </form>
         </div>
         <div class="resultadoBox">
-            <img id="resultadoInput" src="imagemServlet?etiqueta=default" alt="Resultado da etiqueta">
+            <p>Etiqueta: ${resultado}</p>
         </div>
     </div>
 </body>
